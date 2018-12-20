@@ -1,1 +1,10 @@
+package battleship;
+
+public enum Result {
+	DESTROYED,
+	PARTIAL_HIT,
+	NO_HIT,
+	NO_WIN_YET,
+	DRAW,
+}
 
