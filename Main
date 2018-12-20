@@ -1,0 +1,22 @@
+package battleship;
+
+import java.awt.Dimension;
+
+import javax.swing.JFrame;
+
+public class Main {
+public static void main(String[] args) {
+	JFrame frame = new JFrame("Battleground");
+	frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	frame.getContentPane().setPreferredSize(new Dimension(800,600));
+	//frame.setPreferredSize(new Dimension(400,600));
+	frame.pack();
+	Board test = new Board();
+	frame.add(test);
+
+	
+	frame.setVisible(true);
+	
+	
+}
+}
