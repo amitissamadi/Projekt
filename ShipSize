@@ -1,1 +1,12 @@
+package battleship;
+
+public class ShipSize {
+	public int Carrier = 4;
+	public int BattleShip = 3;
+	public int Cruiser = 2;
+	public int Destroyer = 1;
+
+	
+
+}
 
