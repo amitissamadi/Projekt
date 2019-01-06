@@ -1,0 +1,293 @@
+package BS;
+
+
+
+import java.awt.Color;
+import java.awt.Container;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.PaintEvent;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
+
+/**
+ * Represents a user interface to a Battle Ship Game
+ *
+ * @author hasa
+ */
+public class BoardUI extends JFrame implements ActionListener {
+
+    private JButton[] buttons; // array of buttons
+    private Container container; // frame container
+    private GridLayout gridLayout; // layout you need in the frame
+    private Board board; // the game board
+    private int nrOfHits; // used to keep number of hits every time user hits a ship
+    private int nrOfClicks; // number of times user has tried to sink a ship
+    private JLabel userInfo = new JLabel("Info", SwingConstants.CENTER);
+
+    /**
+     * Constructor, here you can initialize all data at the start when running
+     * the game Creates a game bord
+     */
+    public BoardUI() {
+        super("-- Battle Ship Game --");
+        // create a game table, as 10 X 10 cells
+        initTable();
+        // create the client layout with size 500X500 
+        initLayout();
+        //no hits at the start 
+        nrOfHits = 0;
+        //no click at the start 
+        nrOfClicks = 0;
+        // create a table 10X10, to get user interaction
+        gridLayout = new GridLayout(9, 8);
+        // set the frame layout, used to set this frame layout, 
+        // this method is inside the super class JFrame, just call it to set your local 
+        // property (or varible) called gridLayout
+        setLayout(gridLayout); // set JFrame layout
+
+        // get the frame content, used to read user transaction, 
+        // this method is inside the super class JFrame, just call it and initialize your local property called
+        // container
+        container = getContentPane(); // get content pane
+
+        // create the cells, 100 ones
+        buttons = new JButton[64];
+
+        // init each cells
+        for (int count = 0; count < 64; count++) {
+            buttons[count] = new JButton("" + count);
+            // register a listener to each cell to get user interaction
+            buttons[count].addActionListener(this);
+            // set color
+            buttons[count].setBackground(Color.BLUE);
+            // set name per cell, like 0, 1, 2 .... 100
+            buttons[count].setName("text" + count);
+            // set the text that will be displayed per cell, initially a ~ or whatever
+            buttons[count].setText("~");
+            // add each cell as a component to the container, this method is inside the container
+            // that's to say from
+            // public class Container extends Component
+            add(buttons[count]); // add button to JFrame
+        }
+        add(userInfo);
+
+    }
+
+    // handle button event, every time user click to the frame, this method will be called
+    public void actionPerformed(ActionEvent event) {
+        // read the event and analyse the string
+        String s = event.toString();
+        // this string help you to see what is up when user click
+        // to see, uncomment next line to see what is up later when writing more codes
+        //System.out.println("Read what event it is" + s);
+
+        // the toString prints out a text like this
+        // ava.awt.event.ActionEvent[ACTION_PERFORMED,cmd=~,when=1545936015529,modifiers=Button1] on text83
+        // we are interested in the cell number that's to say 83 in this case.
+        // the code below pick up the cell number by substring() method
+        String cellNr = s.substring(s.length() - 6).trim().substring(4);
+        // check if you will see the log for cellNr and nrOfHits
+        // System.out.println(cellNr);
+        // System.out.println(nrOfHits);
+
+        // There are ships as one cell, two cells, three cells and 4 cells, totally as 10 cells
+        // Let user find all 10, when he/she finds them then the game is over, do a disable
+        nrOfClicks++;
+        userInfo.setText(nrOfClicks + " trie(s)");
+        if (nrOfHits != 10) {
+            // check if user click a ship or not
+            if (isShip(cellNr)) { // user clicks on a ship, wow!
+                // if find then update the current cell (button), set text to X, change colour and disable it
+                buttons[Integer.parseInt(cellNr)].setText("X");
+                buttons[Integer.parseInt(cellNr)].setForeground(Color.RED);
+                buttons[Integer.parseInt(cellNr)].setOpaque(true);
+                buttons[Integer.parseInt(cellNr)].setEnabled(false);
+                nrOfHits++;
+                if (nrOfHits == 10) {
+                    // game over, disable the buttons
+                    for (int count = 0; count < 64; count++) {
+                        buttons[count].setEnabled(false);
+                    }
+                }
+            } else // user doesn't click on a ship, :(
+            {
+                // set text to O, change colour and disable the button
+                buttons[Integer.parseInt(cellNr)].setText("O");
+                buttons[Integer.parseInt(cellNr)].setBackground(Color.GRAY);
+                buttons[Integer.parseInt(cellNr)].setOpaque(false);
+                buttons[Integer.parseInt(cellNr)].setEnabled(false);
+            }
+        }
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        jPanel1 = new javax.swing.JPanel();
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 347, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 330, Short.MAX_VALUE)
+        );
+
+        pack();
+        setLocationRelativeTo(null);
+    }// </editor-fold>//GEN-END:initComponents
+
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">                          
+    private void initLayout() {
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+      
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 500, Short.MAX_VALUE)
+        );
+        layout.setVerticalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 500, Short.MAX_VALUE)
+        );
+
+        pack();
+    }// </editor-fold>                        
+
+    /**
+     * Used to check if user clicks on a ship or not
+     *
+     * @param cellNr the cell number we check if that is a ship or not
+     * @return true if it is ship cell
+     */
+    private boolean isShip(String cellNr) {
+        // the cellNumber is one number, but we need to pick up its row number and column number
+        // e.g. if cellNr is 12 it means the row number 1 and the column number is 2
+        // so we need to read/get them
+
+        boolean result = false;
+        int rowNr = 0;
+        int columnNr = 0;
+        // cellNr is eithe 0 or 1 or 2 or 3 or  4 or 5 or 6 or  7 or 8 or 9 or 
+        // 10, 11 .... 99
+        // if cellNr is 0 to 9 then do this
+        if (cellNr.length() == 1) {
+            rowNr = 0;
+            columnNr = Integer.parseInt(cellNr);
+        } else { // if cellNr is 10 to 99 then do this
+            rowNr = Integer.parseInt(cellNr.substring(0, 1));
+            columnNr = Integer.parseInt(cellNr.substring(1));
+        }
+        // if you will see what you read the uncomment the line below
+        // System.out.println("Get RowNumner= " + rowNr + " ColumnNumber= " + columnNr);
+
+        // now you can check the game table and see what is up
+        // that's to say if user hits a ship or not
+        int i = board.getTable()[rowNr][columnNr];
+        // Remeber when making the game table? 1 means it is a ship, -1 means nothing and 0 means has been seen
+        if (i == 1) {
+            // yes, user did hit a ship. Wow!
+            result = true;
+        }
+        return result;
+    }
+
+    /**
+     * Used to create a game table including ships
+     */
+    private void initTable() {
+        board = new Board(8, 8);
+        board.initTable();
+        
+      
+        // if you will see the content of the table then uncomment the line below
+        // board.showTable();  // this will just print out a 10X10 empty table without any ships 
+
+        // create 4 types of ships (1, 2, 3 and 4 cells) vertically or horizontally by random
+        Ship ships = new Ship(board);
+        // update the table using the created ships
+        board.setShips(ships);
+        // create the ships by random
+        ships.initShips();
+        // if you will see where the ships are then uncomment the line below
+        //ships.showShips();
+
+        // update the table including the created ships above by initShips()
+        ships.updateTable();
+        // if you will see the content of the table then uncomment the line below
+        // this will just print out a 10X10 table with the created ships 
+        //board.showTable();
+    }
+
+    /**
+     * @param args the command line arguments
+     */
+    public static void main(String args[]) {
+        /* Set the Nimbus look and feel */
+        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+                * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         */
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(BoardUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(BoardUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(BoardUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(BoardUI.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                new BoardUI().setVisible(true);
+            }
+        });
+    }
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
+    // End of variables declaration//GEN-END:variables
+}
