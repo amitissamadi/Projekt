@@ -79,16 +79,16 @@ public class Ship {
     public void initShips() {
         Random random = new Random();
         for (int ship = 0; ship < 4; ship++) {
-            ships[ship][0] = random.nextInt(8);
-            ships[ship][1] = random.nextInt(8);
+            ships[ship][0] = random.nextInt(10);
+            ships[ship][1] = random.nextInt(10);
             
             //let's check if that shot was already tried 
             //if it was, just finish the do...while when a new pair was randomly selected
             for (int last = 0; last < ship; last++) {
                 if ((ships[ship][0] == ships[last][0]) && (ships[ship][1] == ships[last][1])) {
                     do {
-                        ships[ship][0] = random.nextInt(8);
-                        ships[ship][1] = random.nextInt(8);
+                        ships[ship][0] = random.nextInt(10);
+                        ships[ship][1] = random.nextInt(10);
                     } while ((ships[ship][0] == ships[last][0]) && (ships[ship][1] == ships[last][1]));
                 }
             }
@@ -111,10 +111,10 @@ public class Ship {
         y = ships[1][1];
         // step back by 1 if a cell number is 9. 9 + 1 = 10 is out of table border 
         // do back 1 step, then possible to back forward 1 step in case the x or t is 9
-        if (x == 7) { 
+        if (x == 9) { 
             x = x - 1;
         }
-        if (y == 7) {
+        if (y == 9) {
             y = y - 1;
         }
         getBoard().getTable()[x][y] = 1; // 1 means this is a ship 
@@ -131,10 +131,10 @@ public class Ship {
         // three cells ship
         x = ships[2][0];
         y = ships[2][1];
-        if (x >= 6) {
+        if (x >= 8) {
             x = x - 2;
         }
-        if (y >= 6) {
+        if (y >= 8) {
             y = y - 2;
         }
         getBoard().getTable()[x][y] = 1;
@@ -150,10 +150,10 @@ public class Ship {
         // four cells ship
         x = ships[3][0];
         y = ships[3][1];
-        if (x >= 5) {
+        if (x >= 7) {
             x = x - 3;
         }
-        if (y >= 5) {
+        if (y >= 7) {
             y = y - 3;
         }
         type = random.nextInt(2);
