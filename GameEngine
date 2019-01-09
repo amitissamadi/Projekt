@@ -1,0 +1,44 @@
+package BS;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+public class GameEngine implements PropertyChangeListener {
+    private BoardUI player;
+    private BoardUI computer;
+    private boolean noWinner;
+
+    public void setPlayer(BoardUI player) {
+        this.player = player;
+        this.player.addPropertyChangeListener(this);
+    }
+
+    public void setComputer(BoardUI computer) {
+        this.computer = computer;
+        this.computer.addPropertyChangeListener(this);
+    }
+
+    public void start() {
+        computer.lockGui();
+        
+    }
+    public void turns(){
+    	
+    	
+    }
+
+    public void propertyChange(PropertyChangeEvent evt) {
+      
+    	
+    	if (evt.getPropertyName().equals(BoardUI.PLAYER)) {
+            computer.unlockGui();
+           
+        } else {
+            player.unlockGui();
+        }
+        
+        
+    }
+    
+    
+}
