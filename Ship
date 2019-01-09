@@ -1,0 +1,146 @@
+package BS;
+
+import java.util.Random;
+
+
+public class Ship {      
+                                                         
+    public int[][] ships;
+    public Board board;
+    public Ship(Board board) {
+        
+        ships = new int[4][2];                                                                       // 4 skepp som har x och y koordinater
+        this.board = board;
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public void setBoard(Board board) {
+        this.board = board;
+    }
+
+    public int[][] getShips() {
+        return ships;
+    }
+
+    public void setShips(int[][] ships) {
+        this.ships = ships;
+    }
+
+   
+    public void initShips() {                                                                  // alla skepp
+        Random random = new Random();                                                          // skapar random platser
+        for (int ship = 0; ship < 4; ship++) {                                                 // större än 4 alltså max 4 skepp (0, 1, 2, 3) 
+            ships[ship][0] = random.nextInt(10);
+            ships[ship][1] = random.nextInt(10);
+
+           // for loopen kollar upp en koordinat o ser om den är tom, om ja så ser den om den är tom på antingen y elr x axeln (0 elr 1) 
+           // är den tom så placerar den ut ett skepp från 1-4 rutor. alltså 4 skepp med 4 olika storlekar. 
+            
+            for (int last = 0; last < ship; last++) {           // om det vore så att någon kordinat är upptaen görs randomiseringen om i "do"
+            	                                                // math abs ska hjälpa att skeppen inte hamnar bredvid varandra i randomiseringen
+                if ((ships[ship][0] == ships[last][0]) && (ships[ship][1] == ships[last][1])
+                        || (Math.abs(ships[ship][0] - ships[last][0]) < 3)
+                        || (Math.abs(ships[ship][1] - ships[last][1]) < 3)
+                        ) {
+                    do {
+                        ships[ship][0] = random.nextInt(10);
+                        ships[ship][1] = random.nextInt(10);
+                    } while ((ships[ship][0] == ships[last][0]) && (ships[ship][1] == ships[last][1])
+                            || (Math.abs(ships[ship][0] - ships[last][0]) < 3)
+                            || (Math.abs(ships[ship][1] - ships[last][1]) < 3)
+                        );
+                }
+            }
+        }
+
+    }
+    
+                                           
+    public void updateTable() {                                                                       // uppdaterar boarden efter varje try 
+        Random random = new Random(1);
+        int type;
+        
+                                                                 // EN RUTA SKEPP
+        int x = ships[0][0];
+        int y = ships[0][1];
+        getBoard().getTable()[x][y] = 1;
+
+        x = ships[1][0];
+        y = ships[1][1];
+        
+        // metod som ser till att skeppen inte hamnar utanför boarden, alltså 0-9 är bara tillåtet
+        // eftersom skeppet är 1 ruta så får den vara på plats 9 men inte mer 
+        
+        if (x == 9) { 
+            x = x - 1;
+        }
+        if (y == 9) {
+            y = y - 1;
+        }
+        getBoard().getTable()[x][y] = 1; // 1 = ett skepp
+        
+                                                               // TVÅ RUTOR SKEPP
+        type = random.nextInt(2);
+        
+        if (type == 0) {                                                                                           // gör horisontal skepp
+            getBoard().getTable()[x + 1][y] = 1;
+        } else {                                                                                                   //vertikal skepp
+            getBoard().getTable()[x][y + 1] = 1;
+        }
+
+                                                               // TRE RUTOR SKEPP
+        x = ships[2][0];
+        y = ships[2][1];
+        if (x >= 8) {
+            x = x - 2;
+        }
+        if (y >= 8) {
+            y = y - 2;
+        }
+        getBoard().getTable()[x][y] = 1;
+        type = random.nextInt(2);
+        if (type == 0) { 
+            getBoard().getTable()[x + 1][y] = 1;
+            getBoard().getTable()[x + 2][y] = 1;
+        } else {
+            getBoard().getTable()[x][y + 1] = 1;
+            getBoard().getTable()[x][y + 2] = 1;
+        }
+
+                                                               // FYRA RUTOR SKEPP
+        
+        x = ships[3][0];
+        y = ships[3][1];
+        if (x >= 7) {
+            x = x - 3;
+        }
+        if (y >= 7) {
+            y = y - 3;
+        }
+           
+        type = random.nextInt(2);
+        getBoard().getTable()[x][y] = 1;
+        if (type == 0) { 
+            getBoard().getTable()[x + 1][y] = 1;
+            getBoard().getTable()[x + 2][y] = 1;
+            getBoard().getTable()[x + 3][y] = 1;
+        } else {
+            getBoard().getTable()[x][y + 1] = 1;
+            getBoard().getTable()[x][y + 2] = 1;
+            getBoard().getTable()[x][y + 3] = 1;
+        }
+    }
+
+    // metod som printar ut exakta x och y värden på var de olika skeppen är, men kan bara visas om den är kodad i BoardUI (får inte användas vid spel)
+    // metoden användes när vi felsökte vårt projekt
+    public void showShips() {
+        for (int ship = 0; ship < 4; ship++) {
+            System.out.println("Ship [" + ship + "] = [" + ships[ship][0] + "]" 
+                    + "[" + ships[ship][1] + "]");
+        }
+    }
+
+}
