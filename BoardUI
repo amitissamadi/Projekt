@@ -1,0 +1,219 @@
+package BS;
+
+import java.awt.Color;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.*;
+import java.awt.*;
+
+public class BoardUI extends JPanel implements ActionListener {
+    private JButton[] buttons; 														 // array av knappar
+    private GridLayout gridLayout; 													 // layout till framen
+    private Board board;															 // boarden 
+    private double nrOfHits;														 // räknar antal hits under spelets gång 
+    private double nrOfClicks; 														 // antal ggr ett skepp sjunkit 
+    private JLabel userInfo = new JLabel("Statistik: ", SwingConstants.CENTER);      // liten text i vänster hörn som visar statistik
+    private JLabel aj = new JLabel ("Skadeprocent: ", SwingConstants.CENTER);        // aj visar skadeprocenten på spelomgången för varje spelare
+    private boolean locked = false;                                                  // 
+    private String boardName;  
+    public static final String COMPUTER = "computer";                  // spelare 1, vi valde att kalla den computer kan även kallas player1
+    public static final String PLAYER = "player";                      // spelare 2, kan även kallas player2 
+
+    public BoardUI(boolean computerControlled) {
+        initTable();
+        
+        nrOfHits = 0;                                                 // inga träffar i början, nollställt spel
+        
+        nrOfClicks = 0;                                               // inga klick från början, nollstält 
+        
+        gridLayout = new GridLayout(11, 10);                          // skapar en board 11x10, 11 för att ha en rad för "info" också 
+       
+        setLayout(gridLayout);                                        //  JFrame layout. metoden finns inuti superklassen JFrame 
+
+       
+
+        boardName = computerControlled ? COMPUTER : PLAYER;           // skapar 2 boards? en för computer en för player 
+
+
+        buttons = new JButton[100];                                   // skapar 100 knappar i varje board
+
+        for (int count = 0; count < 100; count++) {
+            buttons[count] = new JButton("" + count);
+
+            buttons[count].addActionListener(this);                   // varje cell/button har en typ av action som utförs vid interaktion 
+                                                                      // dvs vi klickar -> ngt händer
+        
+            buttons[count].setBackground(Color.BLUE);                 // färg på boarden, jag valde blå som ett hav 
+           
+            buttons[count].setName("text" + count);                   // om man vill namnge varje button... vilket vi inte har??? 
+           
+            buttons[count].setText("");                               // varje cell/button har en ~ i början 
+           
+            add(buttons[count]);                                      // adderar button till JFrame
+        }
+        add(userInfo);
+        add(aj);
+    }
+
+    public void lockGui() {
+        for (Component c : getComponents()) {
+            c.setEnabled(false);
+        }
+
+        locked = true;
+    }
+
+    public void unlockGui() {
+        for (Component c : getComponents()) {
+            c.setEnabled(true);
+        }
+
+        locked = false;
+    }
+
+    public boolean isLocked() {
+        return locked;
+    }
+
+                                                                                              // cellNr kollar om det är ett ship eller inte
+                                                                                              // returnerar true om det är det 
+    
+    private boolean isShip(String cellNr) {
+        boolean result = false;
+        int rowNr = 0;
+        int columnNr = 0;
+                                                                             // cellNr är något tal mellan 0-99. motsvarar var på boarden den är
+        
+        if (cellNr.length() == 1) {
+            rowNr = 0;
+            columnNr = Integer.parseInt(cellNr);
+        } else { // om cellNr är 0 till 99 gör
+            rowNr = Integer.parseInt(cellNr.substring(0, 1));
+            columnNr = Integer.parseInt(cellNr.substring(1));
+        }
+                                              // om du vill se vilken rad o kolumn båtarna ligger på, kommentera fram undre rad. används vid felsök 
+                                              // System.out.println("Get RowNumner= " + rowNr + " ColumnNumber= " + columnNr);
+
+                                                                                                           // är det ett skepp eller inte? 
+        int i = board.getTable()[rowNr][columnNr];
+        
+        if (i == 1) {
+           
+            result = true;                                                      // skepp hittat! 1 = skepp. -1 = ingenting och 0 = har blivit sedd 
+        }
+        return result;
+    }
+
+   
+    
+    private void initTable() {
+        board = new Board(10, 10);
+        board.initTable();
+
+        Ship ships = new Ship(board);                                                                               // skapar 4 skepp 
+        
+        board.setShips(ships);                                                                                      // sätter ut skepp 
+        
+        ships.initShips();                                                                                          // skapar random skepp 
+       
+        //ships.showShips();                                                                                        // visar var skeppen är 
+
+       
+        ships.updateTable();
+      
+        //board.showTable();                                  
+    }
+
+    
+    public void actionPerformed(ActionEvent event) {
+        
+        String s = event.toString();
+        //System.out.println("Read what event it is" + s);
+
+        
+        String cellNr = s.substring(s.length() - 6).trim().substring(4);
+        
+        
+    
+        nrOfClicks++;
+        userInfo.setText("Statistik" + nrOfHits/nrOfClicks  );
+        if (nrOfHits != 10) { 
+           
+            if (isShip(cellNr)) {                   //kollar om användaren tryckt på ett skepp eller inte, om ja så blir rutan ett X och byter färg 
+              
+            	
+                buttons[Integer.parseInt(cellNr)].setText("X");
+                buttons[Integer.parseInt(cellNr)].setForeground(Color.RED);
+                buttons[Integer.parseInt(cellNr)].setBackground(Color.PINK);
+                buttons[Integer.parseInt(cellNr)].setOpaque(true);
+                buttons[Integer.parseInt(cellNr)].setEnabled(false);
+                nrOfHits++;
+                if (nrOfHits == 10) {
+                    
+                    for (int count = 0; count < 100; count++) {        //spelet över när alla skepp är hittade, alla knappar "dör" o kan ej tryckas på
+                        buttons[count].setEnabled(false);
+                    }
+                }
+            } else                                                                                                 //  inget skepp har funnits
+            {
+                                                                                                             // rutan blir ett O och byter färg 
+                buttons[Integer.parseInt(cellNr)].setText("O");
+                buttons[Integer.parseInt(cellNr)].setBackground(Color.GRAY);
+                buttons[Integer.parseInt(cellNr)].setBackground(Color.BLACK);
+                buttons[Integer.parseInt(cellNr)].setOpaque(false);
+                buttons[Integer.parseInt(cellNr)].setEnabled(false);
+         
+            
+            }
+      
+        }
+      if (isShip(cellNr)) {
+		aj.setText("Träffar: " + (int)nrOfHits + "/10");
+        if(nrOfHits == 10){
+        	for (int count = 0; count < 100; count++){
+        		buttons[count].setEnabled(false);
+        	}}}else{
+        		aj.setText("Träffar: " + (int)nrOfHits + "/10");
+        		lockGui();
+        		firePropertyChange(boardName, false, true);
+        		
+        }
+                
+      
+      }
+    
+    
+    public static void main(String[] args){
+    	
+    try {
+        for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+            if ("Nimbus".equals(info.getName())) {
+                javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                break;
+            }
+        }
+    } catch (ClassNotFoundException ex) {
+        java.util.logging.Logger.getLogger(GameFrame.class
+                .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
+    } catch (InstantiationException ex) {
+        java.util.logging.Logger.getLogger(GameFrame.class
+                .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
+    } catch (IllegalAccessException ex) {
+        java.util.logging.Logger.getLogger(GameFrame.class
+                .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+
+    } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        java.util.logging.Logger.getLogger(GameFrame.class
+                .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+    }
+    java.awt.EventQueue.invokeLater(new Runnable() {
+        public void run() {
+            new GameFrame(new GameEngine()).setVisible(true);
+        }
+    });
+}
+}
+
