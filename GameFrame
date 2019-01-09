@@ -1,0 +1,56 @@
+package BS;
+
+import java.awt.Container;
+import java.awt.GridLayout;
+import javax.swing.JFrame;
+
+public class GameFrame extends JFrame {
+
+    private GridLayout gridLayout;                                                        // layout you need in the frame
+    private BoardUI playerBoard;
+    private BoardUI computerBoard;
+
+   
+    public GameFrame(GameEngine engine) {
+        super("-- Battle Ship Game --");
+
+        
+        initLayout();                                                                      // skapar layout 
+
+     
+        gridLayout = new GridLayout(1, 1);
+        
+
+        setLayout(gridLayout);                                                             //  JFrame layout
+
+       
+        playerBoard = new BoardUI(false);
+        computerBoard = new BoardUI(true);
+        add(playerBoard);
+        add(computerBoard);
+
+        engine.setPlayer(playerBoard);
+        engine.setComputer(computerBoard);
+        engine.start();
+    }
+
+ 
+    private void initLayout() {                                                           // bestämmer storleken på hela rutan på spelet, layout 
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 1600, Short.MAX_VALUE)                                 // bredden horisontellt
+        );
+        layout.setVerticalGroup(
+                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 800, Short.MAX_VALUE)                                 //höjden vertikalt 
+        );
+
+        pack();
+    }
+
+}
