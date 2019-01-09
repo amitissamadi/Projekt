@@ -1,0 +1,92 @@
+package BS;
+
+import java.awt.image.ShortLookupTable;
+
+public class Board {
+
+    public int[][] table;
+    // skapar ett table 
+    public int rows;
+    // skapar rader
+    public int columns;
+    // skapar kolumner
+    public int nrOfShips;
+    // skapar antal skepp 
+    public Ship ships;
+
+    public Ship getShips() {
+        return ships;   // 
+    }
+
+    public void setShips(Ship ships) {
+        this.ships = ships;
+    }
+
+    public Board(int noOfrows, int nrOfColumns) {
+        this.rows = noOfrows;
+        this.columns = nrOfColumns;
+        table = new int[rows][columns];
+        // skapar boarden, array av int[][] för varje ruta 
+    }
+
+    public int getNrOfShips() {
+        return nrOfShips;
+    }
+
+    public void setNrOfShips(int nrOfShips) {
+        this.nrOfShips = nrOfShips;
+    }
+
+    public int getRows() {
+        return rows;
+    }
+
+    public void setRows(int rows) {
+        this.rows = rows;
+    }
+
+    public int getColumns() {
+        return columns;
+    }
+
+    public void setColumns(int columns) {
+        this.columns = columns;
+    }
+
+    public int[][] getTable() {
+        return table;
+    }
+
+    public void setTable(int[][] table) {
+        this.table = table;
+    }
+
+   
+    public void initTable() {
+        for (int row = 0; row < getRows(); row++) {
+            for (int column = 0; column < getColumns(); column++) {
+                table[row][column] = -1;
+            }
+        }
+    }
+   
+ 
+    
+    public void showTable() {
+        for (int row = 0; row < getRows(); row++) {
+            System.out.print((row + 1) + "");
+            for (int column = 0; column < getColumns(); column++) {
+                if (getTable()[row][column] == -1) {
+                    System.out.print("\t" + "o");
+                } else if (getTable()[row][column] == 0) {
+                    System.out.print("\t" + "*");
+                } else if (getTable()[row][column] == 1) {
+                    System.out.print("\t" + "X");
+                }
+       
+
+                
+            }
+        }
+    }
+}
